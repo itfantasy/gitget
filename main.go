@@ -13,11 +13,16 @@ func main() {
 	args := os.Args
 
 	if len(args) != 2 || args[0] != "gitget" {
-		fmt.Println(" illegal args !!")
+		fmt.Println(" illegal command line !!")
 		return
 	}
 
 	url := args[1]
+	if strings.Contains(url, "http://") || strings.Contains(url, "https://") {
+		fmt.Println(" the url cannot start with http:// or https:// ..")
+		return
+	}
+
 	downloadUrl := "https://" + url + "/archive/master.zip"
 
 	res, err := http.Get(downloadUrl)
