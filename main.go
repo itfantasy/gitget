@@ -12,44 +12,50 @@ import (
 func main() {
 	args := os.Args
 
-	if len(args) != 2 || args[0] != "gitget" {
+	if len(args) < 2 || args[0] != "gitget" {
 		fmt.Println(" illegal command line !!")
 		return
 	}
 
-	url := args[1]
-	if strings.Contains(url, "http://") || strings.Contains(url, "https://") {
-		fmt.Println(" the url cannot start with http:// or https:// ..")
-		return
-	}
+	urlsLen := len(args) - 1
 
-	downloadUrl := "https://" + url + "/archive/master.zip"
+	for i := 1; i < urlsLen; i++ {
 
-	res, err := http.Get(downloadUrl)
-	if err != nil {
-		panic(err)
-	}
+		url := args[i]
+		if strings.Contains(url, "http://") || strings.Contains(url, "https://") {
+			fmt.Println(" the url cannot start with http:// or https:// ..")
+			return
+		}
 
-	exist, _ := pathExists(url)
-	if !exist {
-		if err := os.MkdirAll(url, 0777); err != nil {
+		downloadUrl := "https://" + url + "/archive/master.zip"
+
+		res, err := http.Get(downloadUrl)
+		if err != nil {
 			panic(err)
 		}
-	}
 
-	f, err := os.Create(url + "/package.zip")
-	if err != nil {
-		panic(err)
-	}
-	io.Copy(f, res.Body)
-	f.Close()
+		exist, _ := pathExists(url)
+		if !exist {
+			if err := os.MkdirAll(url, 0777); err != nil {
+				panic(err)
+			}
+		}
 
-	if err := deCompress(url+"/package.zip", url); err != nil {
-		panic(err)
-	}
+		f, err := os.Create(url + "/package.zip")
+		if err != nil {
+			panic(err)
+		}
+		io.Copy(f, res.Body)
+		f.Close()
 
-	if err := os.Remove(url + "/package.zip"); err != nil {
-		panic(err)
+		if err := deCompress(url+"/package.zip", url); err != nil {
+			panic(err)
+		}
+
+		if err := os.Remove(url + "/package.zip"); err != nil {
+			panic(err)
+		}
+
 	}
 }
 
