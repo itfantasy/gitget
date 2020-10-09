@@ -17,11 +17,13 @@ func main() {
 		return
 	}
 
-	urlsLen := len(args) - 1
+	urlsLen := len(args)
 
 	for i := 1; i < urlsLen; i++ {
 
 		url := args[i]
+		fmt.Println("begin to download " + url + " ...")
+
 		if strings.Contains(url, "http://") || strings.Contains(url, "https://") {
 			fmt.Println(" the url cannot start with http:// or https:// ..")
 			return
@@ -57,6 +59,8 @@ func main() {
 		}
 
 	}
+
+	fmt.Println("gitget finished !!")
 }
 
 func pathExists(path string) (bool, error) {
